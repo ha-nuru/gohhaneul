@@ -1,0 +1,29 @@
+@charset "utf-8";
+.h_link{
+    text-align: center;
+}
+.h_link li {
+    display: inline-block;
+  }
+.h_link .h_link_b {
+    left: 50%;
+    transform: translateX(-50%);
+}
+.ind_starbucks span{
+  color: #3be47f;
+}
+
+/* .monitor{
+  background-color: transparent;
+}
+.monitor::after{
+  content: '';
+  display: block;
+  position: absolute;
+  left:0;
+  top:0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(20,37,82,.7);
+  z-index: 100;
+} */

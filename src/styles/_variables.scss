@@ -1,0 +1,58 @@
+// ========================================
+// 색상 변수
+// ========================================
+
+// 배경 색상
+$bg-primary: #ffeffd;      // 메인 핑크 배경
+$bg-secondary: #fff8f1;    // 베이지 배경
+$bg-dark: #282552;         // 다크 네이비
+$bg-pink-light: #fff0fd;   // 연한 핑크
+$bg-pink-bright: #ffacf1;  // 밝은 핑크
+
+// 강조 색상
+$color-magenta: #fb00db;   // 마젠타
+$color-purple: #aa00ff;    // 퍼플
+$color-cyan: #00ffff;      // 시안
+$color-yellow: #f8bb1c;    // 노란색
+$color-yellow-dark: #d3b406; // 진한 노란색
+$color-gray: #707070;      // 회색
+
+// 텍스트 색상
+$text-primary: $color-magenta;
+$text-white: #fff;
+$text-dark: $bg-dark;
+
+// ========================================
+// 레이아웃 변수
+// ========================================
+
+$container-max-width: 1400px;
+$container-side-padding: 30px;
+
+// ========================================
+// Z-Index 레이어
+// ========================================
+
+$z-loading: 1000;
+$z-modal: 500;
+$z-load-emoji: 400;
+$z-overlay: 300;
+$z-header: 100;
+$z-default: 20;
+$z-base: 1;
+
+// ========================================
+// 반응형 브레이크포인트
+// ========================================
+
+$breakpoint-mobile: 780px;
+$breakpoint-tablet: 1020px;
+$breakpoint-desktop: 1200px;
+
+// ========================================
+// 애니메이션 시간
+// ========================================
+
+$transition-fast: 0.2s;
+$transition-normal: 0.3s;
+$transition-slow: 0.5s;
