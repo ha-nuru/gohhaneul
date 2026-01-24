@@ -1,41 +1,16 @@
 @charset "utf-8";
-
+@use 'variables' as *;
+@use 'mixins' as *;
 /* 여백 초기화 */
-body,
-div,
-ul,
-li,
-dl,
-dd,
-dt,
-ol,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-input,
-fieldset,
-legend,
-p,
-select,
-table,
-th,
-td,
-tr,
-textarea,
-button,
-form,
-figure,
-figcaption {
+*{
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 /* a 링크 초기화 */
 a {
-    color: #222;
+    color: #515151;
     text-decoration: none;
 }
 
@@ -63,7 +38,10 @@ label {
 
 /* 폰트 초기화 */
 html {
-    font-size: 0.625em;
+    font-size: 16px;
+    @include mobile-medium {
+        font-size: 14px;
+    }
 }
 
 body,
@@ -73,12 +51,11 @@ select,
 button,
 table {
     // 한글: SpoqaHanSansNeo, 영어: lores-9-narrow
-    font-family: "SpoqaHanSansNeo", lores-9-narrow, sans-serif;
-    font-weight: 700;
+    font-family: $font-family-base;
+    font-weight: 400;
     font-style: normal;
-    color: #222;
-    line-height: 1.5;
-    text-transform: uppercase;
+    color: #515151;
+    line-height: 1.2;
 }
 
 /* 폰트 스타일 초기화 */
@@ -96,7 +73,6 @@ address {
     font-weight: 100;
     font-style: normal;
     font-display: swap;
-    unicode-range: U+AC00-D7AF, U+1100-11FF, U+3130-318F, U+A960-A97F, U+D7B0-D7FF; // 한글 범위
 }
 
 @font-face {
@@ -118,7 +94,6 @@ address {
     font-weight: 400;
     font-style: normal;
     font-display: swap;
-    unicode-range: U+AC00-D7AF, U+1100-11FF, U+3130-318F, U+A960-A97F, U+D7B0-D7FF; // 한글 범위
 }
 
 @font-face {
@@ -129,7 +104,6 @@ address {
     font-weight: 500;
     font-style: normal;
     font-display: swap;
-    unicode-range: U+AC00-D7AF, U+1100-11FF, U+3130-318F, U+A960-A97F, U+D7B0-D7FF; // 한글 범위
 }
 
 @font-face {
@@ -140,7 +114,6 @@ address {
     font-weight: 700;
     font-style: normal;
     font-display: swap;
-    unicode-range: U+AC00-D7AF, U+1100-11FF, U+3130-318F, U+A960-A97F, U+D7B0-D7FF; // 한글 범위
 }
 
 /* 블릿기호 초기화 */
@@ -160,11 +133,9 @@ h6 {
     font-size: 13px;
     margin: 0;
     padding: 0;
-    text-transform: uppercase;
     font-weight: 900;
     line-height: 1;
-    font-family: "SpoqaHanSansNeo", Gotham, Futura, "Helvetica Neue", Helvetica,
-        Arial, "sans-serif";
+    font-family: $font-family-base
 }
 
 /* 테두리 초기화 */

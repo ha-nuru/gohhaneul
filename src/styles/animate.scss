@@ -16,7 +16,7 @@
     opacity: 1;
   }
 }
-/*sub_bott*/
+/* bottom links */
 
 @keyframes condemned_blink_effect {
   0% {
@@ -53,22 +53,21 @@
 .marquee-nav,
 .marquee-nav_l {
   white-space: nowrap;
-  display: flex;
-  animation-name: kf_page_title;
-  animation-iteration-count: infinite;
-  animation-duration: 20s;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
-  position: absolute;
-  animation-play-state: running;
-  top: 0;
-  left: 0;
+//   position: absolute;
+//   animation-name: kf_page_title;
+//   animation-iteration-count: infinite;
+//   animation-duration: 20s;
+//   animation-timing-function: linear;
+//   animation-fill-mode: forwards;
+//   animation-play-state: running;
+//   top: 0;
+//   left: 0;
 }
 .marquee-nav_l {
-  left: auto;
-  top: 0;
-  right: 0;
-  animation-name: kf_page_title1;
+//   left: auto;
+//   top: 0;
+//   right: 0;
+//   animation-name: kf_page_title1;
 }
 @keyframes kf_page_title {
   0% {

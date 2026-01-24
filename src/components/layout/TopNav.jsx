@@ -1,11 +1,11 @@
 export default function TopNav() {
   return (
-    <div className="scroll-nav">
-      <a href="#sub_bott">about</a>
-      <a href="#About_gh" className="sec2_imogi">
+    <div className="navi">
+      <a href="#about">about</a>
+      <a href="#home" className="emoji-sm">
         goh HA-NEUL
       </a>
-      <a href="#site_work">work</a>
+      <a href="#works">work</a>
     </div>
   );
 }

@@ -1,11 +1,11 @@
 //index7
 $(function () {
-  /*nav - mouseover imogi*/
-  $(".haneul_imogi").mouseover(function () {
-    $(this).parent().siblings(".imogi_over").css("display", "block");
+  /*nav - mouseover emoji*/
+  $(".haneul_emoji").mouseover(function () {
+    $(this).parent().siblings(".emoji_over").css("display", "block");
   });
-  $(".haneul_imogi").mouseleave(function () {
-    $(this).parent().siblings(".imogi_over").css("display", "none");
+  $(".haneul_emoji").mouseleave(function () {
+    $(this).parent().siblings(".emoji_over").css("display", "none");
   });
   //site_index mousemove img
   $(document).mousemove(function (e) {

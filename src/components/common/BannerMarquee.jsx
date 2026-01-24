@@ -6,7 +6,7 @@ export default function BannerMarquee({
 }) {
   return (
     <div className={wrapperClassName}>
-      <div className="banner_inner _Default about-marquee">
+      <div className="banner_inner about-marquee">
         {Array.from({ length: count }).map((_, i) => (
           <span
             key={`${itemClassName}-${i}`}

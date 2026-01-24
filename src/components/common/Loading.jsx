@@ -1,7 +1,9 @@
 export default function Loading({ isVisible = true }) {
+  if (!isVisible) return null;
+  
   return (
-    <div className={`loading ${!isVisible ? 'fade-out' : ''}`}>
-      <div className={`load_imogi ${!isVisible ? 'fade-out' : ''}`} />
+    <div className="loading">
+      <div className="load_emoji" />
     </div>
   );
 }
