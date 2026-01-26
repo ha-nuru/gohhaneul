@@ -209,7 +209,15 @@ export default function Works() {
                                         </span>
                                     </p>
                                     {selectedWork.description && (
-                                        <p className="detail-text">{selectedWork.description}</p>
+                                        <p className="detail-text">
+                                            {Array.isArray(selectedWork.description) ? (
+                                                selectedWork.description.map((desc, index) => (
+                                                    <span key={index}>{desc}</span>
+                                                ))
+                                            ) : (
+                                                <span>{selectedWork.description}</span>
+                                            )}
+                                        </p>
                                     )}
                                 </div>
                             </div>

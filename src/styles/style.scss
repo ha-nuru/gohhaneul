@@ -801,6 +801,11 @@
                         font-size: fluid(toRem(16), toRem(18));
                         font-weight: 400;
                         line-height: 1.4;
+
+                        span{
+                            display: block;
+                            margin-top: toRem(2);
+                        }
                     }
 
                     .skill {
