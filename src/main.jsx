@@ -5,7 +5,7 @@ import App from "./App.jsx";
 // SCSS 스타일 import
 import "./styles/reset.scss";
 import "./styles/animate.scss";
-import "./styles/style5.scss";
+import "./styles/style.scss";
 import "./styles/swiper.scss";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -13,4 +13,3 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <App />
   </React.StrictMode>
 );
-

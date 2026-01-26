@@ -60,20 +60,20 @@ export default function App() {
     };
   }, []);
 
-  // 3) 레거시/외부 스크립트 init (index6Init, splittingTest) + cleanup 확실히
+  // 3) 레거시/외부 스크립트 init (portfolioInit, splittingTest) + cleanup 확실히
   useEffect(() => {
     // 같은 마운트 내 중복 실행 방지
     if (hasInitializedRef.current) return;
     hasInitializedRef.current = true;
 
-    let cleanupIndex6 = null;
+    let cleanupPortfolio = null;
 
     // DOM 렌더 + layout 계산 이후 실행
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        if (typeof window.index6Init === "function") {
-          // ✅ index6Init이 반환하는 cleanup을 받아둠
-          cleanupIndex6 = window.index6Init();
+        if (typeof window.portfolioInit === "function") {
+          // ✅ portfolioInit이 반환하는 cleanup을 받아둠
+          cleanupPortfolio = window.portfolioInit();
         }
 
         if (typeof window.splittingTest === "function") {
@@ -84,7 +84,7 @@ export default function App() {
 
     return () => {
       // ✅ 리스너/ScrollTrigger/jQuery 애니메이션 등 정리
-      cleanupIndex6?.();
+      cleanupPortfolio?.();
     };
   }, []);
 

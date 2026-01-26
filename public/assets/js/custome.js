@@ -1,17 +1,17 @@
-/* global $, gsap, ScrollTrigger */
+/* global $, gsap, ScrollTrigger, SplitText */
 
 /* =========================================================
-   index6Init : React 렌더 이후 useEffect에서 1회 호출
+   portfolioInit : React 렌더 이후 useEffect에서 1회 호출
    ✅ 개선: cleanup 반환(리스너/ScrollTrigger/jQuery 애니메이션 정리)
  ========================================================= */
 
- window.index6Init = function () {
+ window.portfolioInit = function () {
     // ✅ 이미 초기화된 상태면, 기존 cleanup 먼저 실행(중복 방지)
-    if (typeof window.__INDEX6_CLEANUP__ === "function") {
-      window.__INDEX6_CLEANUP__();
-      window.__INDEX6_CLEANUP__ = null;
+    if (typeof window.__PORTFOLIO_CLEANUP__ === "function") {
+      window.__PORTFOLIO_CLEANUP__();
+      window.__PORTFOLIO_CLEANUP__ = null;
     }
-  
+
     /* -------------------------------
        marqueeify (emoji)
     -------------------------------- */
@@ -20,21 +20,21 @@
     let currentClass = "";
     const $target = $(".yo");
     const $marquee = $(".marquee");
-  
+
     if ($marquee.length) {
       $marquee.marqueeify({
         speed: 350,
         bumpEdge: function () {
           const nextClass = classes[currentClassIndex++];
           if (currentClassIndex >= classes.length) currentClassIndex = 0;
-  
+
           if (currentClass) $target.removeClass(currentClass);
           $target.addClass(nextClass);
           currentClass = nextClass;
         },
       });
     }
-  
+
     /* -------------------------------
        rollingmarquee (jQuery.marquee)
     -------------------------------- */
@@ -64,7 +64,7 @@
         startVisible: true,
       });
     }
-  
+
     /* -------------------------------
        GSAP ScrollTrigger
     -------------------------------- */
@@ -240,7 +240,7 @@
         } catch (e) {
           // fallback: 강제 stop
           $marquee.stop(true, true);
-          $(window).off("resize.index6");
+          $(window).off("resize.portfolio");
         }
       }
   
@@ -271,7 +271,7 @@
       window.workGridTrigger = null;
     };
   
-    window.__INDEX6_CLEANUP__ = cleanup;
+    window.__PORTFOLIO_CLEANUP__ = cleanup;
     return cleanup;
   };
   
@@ -290,9 +290,9 @@
           $el.stop(true, true);
           // resize 핸들러 제거
           if (data && data.onResize) {
-            $(window).off("resize.index6", data.onResize);
+            $(window).off("resize.portfolio", data.onResize);
           } else {
-            $(window).off("resize.index6");
+            $(window).off("resize.portfolio");
           }
           $el.removeData("marqueeify");
         });
@@ -395,9 +395,197 @@
   
         // ✅ 네임스페이스 + 핸들러 저장 → destroy에서 정확히 off 가능
         const onResize = () => getSizes();
-        $(window).on("resize.index6", onResize);
+        $(window).on("resize.portfolio", onResize);
         $el.data("marqueeify", { onResize });
       });
     };
   })(jQuery);
-  
+
+  /* =========================================================
+     splittingTest : SplitText 애니메이션 초기화
+   ========================================================= */
+  if (typeof SplitText !== "undefined" && typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
+    gsap.registerPlugin(SplitText, ScrollTrigger);
+  }
+
+  window.splittingTest = function () {
+    console.count("splittingTest called");
+
+    document.fonts.ready.then(() => {
+      const cleanup = (el) => {
+        el._splitTrigger?.kill();
+        el._splitTrigger = null;
+
+        if (el._splitText) {
+          el._splitText.revert();
+          el._splitText = null;
+        }
+
+        el._played = false;
+
+        el._lineSelf = null;
+        el._lineTriggerMade = false;
+
+        el._charSelf = null;
+        el._charTriggerMade = false;
+      };
+
+      const initLines = (el) => {
+        cleanup(el);
+
+        const split = SplitText.create(el, {
+          type: "words,lines",
+          linesClass: "line",
+          autoSplit: true,
+          onSplit: (self) => {
+            console.count("onSplit line");
+
+            el._lineSelf = self;
+
+            if (el._played) {
+              gsap.set(el, { opacity: 1 });
+              gsap.set(self.lines, { yPercent: 0, opacity: 1 });
+              return;
+            }
+
+            gsap.set(self.lines, { yPercent: 100, opacity: 0 });
+            gsap.set(el, { opacity: 1 });
+
+            if (!el._lineTriggerMade) {
+              el._lineTriggerMade = true;
+
+              el._splitTrigger = ScrollTrigger.create({
+                trigger: el,
+                start: "top 80%",
+                once: true,
+                markers: false,
+                onEnter: () => {
+                  el._played = true;
+
+                  const lines = el._lineSelf?.lines || self.lines;
+
+                  gsap.killTweensOf(lines);
+                  gsap.to(lines, {
+                    yPercent: 0,
+                    opacity: 1,
+                    duration: 0.6,
+                    stagger: 0.1,
+                    ease: "expo.out",
+                  });
+                },
+              });
+            }
+          },
+        });
+
+        el._splitText = split;
+      };
+
+      const initChars = (el) => {
+        cleanup(el);
+
+        const split = SplitText.create(el, {
+          type: "chars",
+          onSplit: (self) => {
+            console.count("onSplit char");
+
+            el._charSelf = self;
+
+            if (el._played) {
+              gsap.set(el, { opacity: 1 });
+              gsap.set(self.chars, { y: 0, opacity: 1, rotationX: 0 });
+              return;
+            }
+
+            gsap.set(self.chars, { y: 50, opacity: 0, rotationX: -90 });
+            gsap.set(el, { opacity: 1 });
+
+            if (!el._charTriggerMade) {
+              el._charTriggerMade = true;
+
+              el._splitTrigger = ScrollTrigger.create({
+                trigger: el,
+                start: "top 80%",
+                once: true,
+                markers: false,
+                onEnter: () => {
+                  el._played = true;
+
+                  const chars = el._charSelf?.chars || self.chars;
+
+                  gsap.killTweensOf(chars);
+                  gsap.to(chars, {
+                    y: 0,
+                    opacity: 1,
+                    rotationX: 0,
+                    duration: 0.8,
+                    stagger: 0.02,
+                    ease: "back.out(1.7)",
+                  });
+                },
+              });
+            }
+          },
+        });
+
+        el._splitText = split;
+      };
+
+      const initWords = (el) => {
+        cleanup(el);
+
+        const split = SplitText.create(el, {
+          type: "words",
+          wordsClass: "word",
+          onSplit: (self) => {
+            console.count("onSplit word");
+
+            el._wordSelf = self;
+
+            if (el._played) {
+              gsap.set(el, { opacity: 1 });
+              gsap.set(self.words, { yPercent: 0, opacity: 1 });
+              return;
+            }
+
+            gsap.set(self.words, { yPercent: 100, opacity: 0 });
+            gsap.set(el, { opacity: 1 });
+
+            if (!el._wordTriggerMade) {
+              el._wordTriggerMade = true;
+
+              el._splitTrigger = ScrollTrigger.create({
+                trigger: el,
+                start: "top 80%",
+                end: "bottom 20%",
+                once: true,
+                markers: false,
+                onEnter: () => {
+                  el._played = true;
+
+                  const words = el._wordSelf?.words || self.words;
+
+                  gsap.killTweensOf(words);
+                  gsap.to(words, {
+                    yPercent: 0,
+                    opacity: 1,
+                    duration: 0.6,
+                    stagger: 0.06,
+                    ease: "expo.out",
+                  });
+                },
+              });
+            }
+          },
+        });
+
+        el._splitText = split;
+      };
+
+      document.querySelectorAll(".split.word").forEach(initWords);
+      document.querySelectorAll(".split.line").forEach(initLines);
+      document.querySelectorAll(".split.char").forEach(initChars);
+
+      ScrollTrigger.refresh();
+    });
+  };
