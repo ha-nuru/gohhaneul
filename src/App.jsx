@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Loading from "./components/common/Loading.jsx";
 import HomeMain from "./components/sections/HomeMain.jsx";
 import AboutGh from "./components/sections/AboutGh.jsx";
@@ -6,94 +6,104 @@ import Works from "./components/sections/Works.jsx";
 import BottomLinks from "./components/sections/BottomLinks.jsx";
 import NavScroll from "./components/layout/NavScroll.jsx";
 
+const LOADING_TIME = 2000; // ms
+
 export default function App() {
-    const [isLoading, setIsLoading] = useState(true);
-    const [showNavScroll, setShowNavScroll] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showNavScroll, setShowNavScroll] = useState(false);
+  const hasInitializedRef = useRef(false);
 
-    useEffect(() => {
-        // 로딩 화면 제거
-        const handleLoad = () => {
-            setTimeout(() => {
-                setIsLoading(false);
-            }, 1500);
-        };
+  // 1) 로딩 종료 타이밍 관리 (load + timeout cleanup)
+  useEffect(() => {
+    let timeoutId = null;
 
-        if (document.readyState === "complete") {
-            handleLoad();
-        } else {
-            window.addEventListener("load", handleLoad);
-            return () => window.removeEventListener("load", handleLoad);
-        }
-    }, []);
+    const handleLoad = () => {
+      timeoutId = window.setTimeout(() => {
+        setIsLoading(false);
+      }, LOADING_TIME);
+    };
 
-    useEffect(() => {
-        // main 섹션 진입 감지
-        const handleScroll = () => {
-            const mainElement = document.getElementById("main");
-            if (!mainElement) return;
+    if (document.readyState === "complete") {
+      handleLoad();
+    } else {
+      window.addEventListener("load", handleLoad);
+    }
 
-            const mainTop = mainElement.getBoundingClientRect().top;
-            const windowHeight = window.innerHeight;
-            const offset = windowHeight / 8;
-            
-            // main 섹션이 화면에 진입했는지 확인
-            if (mainTop <= offset) {
-                setShowNavScroll(true);
-            } else {
-                setShowNavScroll(false);
-            }
-        };
+    return () => {
+      if (timeoutId) window.clearTimeout(timeoutId);
+      window.removeEventListener("load", handleLoad);
+    };
+  }, []);
 
-        // 초기 상태 확인
-        handleScroll();
+  // 2) main 섹션 진입 감지 (IntersectionObserver)
+  useEffect(() => {
+    const mainElement = document.getElementById("main");
+    if (!mainElement) return;
 
-        window.addEventListener("scroll", handleScroll);
-        window.addEventListener("resize", handleScroll);
+    // rootMargin을 px로 계산해 % 해석 이슈 가능성 줄이기
+    const margin = Math.round(window.innerHeight * -0.125); // -12.5%
 
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-            window.removeEventListener("resize", handleScroll);
-        };
-    }, []);
-
-    useEffect(() => {
-        // React 18 StrictMode 대응 (1회만 실행)
-        if (window.__INDEX6_INIT__) return;
-        window.__INDEX6_INIT__ = true;
-
-        // DOM 렌더 + layout 계산 이후 실행
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                if (typeof window.index6Init === "function") {
-                    window.index6Init();
-                }
-            });
-        });
-
-        // cleanup (필요 시)
-        return () => {
-            // 전역 이벤트 정리하고 싶으면 여기에
-            // $(window).off(".index6");
-            // $(document).off(".index6");
-        };
-    }, []);
-
-    return (
-        <>
-            <Loading isVisible={isLoading} />
-            <HomeMain />
-
-            {/* NavScroll - main 진입 시 표시 */}
-            {showNavScroll && <NavScroll />}
-
-            {/* Main content */}
-            <main id="main">
-                <AboutGh />
-                <Works />
-            </main>
-            <footer>
-                <BottomLinks />
-            </footer>
-        </>
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowNavScroll(entry.isIntersecting);
+      },
+      {
+        rootMargin: `${margin}px 0px ${margin}px 0px`,
+        threshold: 0,
+      }
     );
+
+    observer.observe(mainElement);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  // 3) 레거시/외부 스크립트 init (index6Init, splittingTest) + cleanup 확실히
+  useEffect(() => {
+    // 같은 마운트 내 중복 실행 방지
+    if (hasInitializedRef.current) return;
+    hasInitializedRef.current = true;
+
+    let cleanupIndex6 = null;
+
+    // DOM 렌더 + layout 계산 이후 실행
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (typeof window.index6Init === "function") {
+          // ✅ index6Init이 반환하는 cleanup을 받아둠
+          cleanupIndex6 = window.index6Init();
+        }
+
+        if (typeof window.splittingTest === "function") {
+          window.splittingTest();
+        }
+      });
+    });
+
+    return () => {
+      // ✅ 리스너/ScrollTrigger/jQuery 애니메이션 등 정리
+      cleanupIndex6?.();
+    };
+  }, []);
+
+  return (
+    <>
+      <Loading isVisible={isLoading} duration={LOADING_TIME} />
+      <HomeMain />
+
+      {/* NavScroll - main 진입 시 표시 */}
+      {showNavScroll && <NavScroll />}
+
+      <main id="main">
+        <AboutGh />
+        <Works />
+      </main>
+
+      <footer>
+        <BottomLinks />
+      </footer>
+    </>
+  );
 }

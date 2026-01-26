@@ -1,157 +1,28 @@
-/* index6 legacy (React-safe single bundle) */
-/* global $, Swiper, gsap, ScrollTrigger */
+/* global $, gsap, ScrollTrigger */
 
-/* -------------------------------
-   로딩 (1회)
--------------------------------- */
-$(window).on("load.index6", function () {
-    setTimeout(function () {
-      $(".loading").fadeOut();
-      $(".load_imogi").fadeOut();
-    }, 300);
-  });
-  
-  /* =========================================================
-     AboutGh 전용: Swiper
-     - React에서 AboutGh mount 후 호출 권장
-  ========================================================= */
-  window.legacyIndex6Init = function () {
-    // ✅ 이 변수는 initSwipers/resize 모두에서 공유되어야 함
-    let aboutSwiper = null;
-  
-    function destroyAboutSwiper() {
-      const swiperElement = document.querySelector(".about_swiper_wrap");
-  
-      try {
-        if (aboutSwiper && aboutSwiper.destroy) {
-          aboutSwiper.destroy(true, true);
-        }
-      } catch (e) {}
-  
-      aboutSwiper = null;
-  
-      try {
-        if (swiperElement && swiperElement.swiper) {
-          swiperElement.swiper.destroy(true, true);
-          swiperElement.swiper = null;
-        }
-      } catch (e) {}
+/* =========================================================
+   index6Init : React 렌더 이후 useEffect에서 1회 호출
+   ✅ 개선: cleanup 반환(리스너/ScrollTrigger/jQuery 애니메이션 정리)
+ ========================================================= */
+
+ window.index6Init = function () {
+    // ✅ 이미 초기화된 상태면, 기존 cleanup 먼저 실행(중복 방지)
+    if (typeof window.__INDEX6_CLEANUP__ === "function") {
+      window.__INDEX6_CLEANUP__();
+      window.__INDEX6_CLEANUP__ = null;
     }
   
-    function initSwipers() {
-      const winW = $(window).width();
-      const isMobile = winW <= 780;
-  
-      const swiperElement = document.querySelector(".about_swiper_wrap");
-      if (!swiperElement) return;
-  
-      // ✅ 기존 인스턴스 제거
-      destroyAboutSwiper();
-  
-      // ✅ 새로 생성
-      aboutSwiper = new Swiper(".about_swiper_wrap", {
-        watchOverflow: true,
-        spaceBetween: isMobile ? 20 : 30,
-        centeredSlides: true,
-        slidesPerView: isMobile ? 1 : "auto",
-        loop: isMobile,
-  
-        autoplay: isMobile
-          ? { delay: 2500, disableOnInteraction: false }
-          : false,
-  
-        pagination: isMobile
-          ? { el: ".swiper-pagination", clickable: true }
-          : false,
-  
-        simulateTouch: true,
-        allowTouchMove: true,
-        grabCursor: true,
-        touchEventsTarget: "wrapper",
-  
-        touchRatio: 1,
-        resistance: true,
-        resistanceRatio: 0.85,
-  
-        // ⭐ React 버튼 클릭 살리기
-        preventClicks: false,
-        preventClicksPropagation: false,
-      });
-  
-      setTimeout(function () {
-        if (!aboutSwiper) return;
-  
-        if (isMobile) {
-          aboutSwiper?.autoplay?.start();
-          $(".swiper-pagination").show();
-        } else {
-          aboutSwiper?.autoplay?.stop();
-          $(".swiper-pagination").hide();
-          aboutSwiper.update();
-        }
-      }, 50);
-    }
-  
-    // ✅ 중복 resize 방지: 네임스페이스 사용
-    $(window).off("resize.aboutSwiper");
-    initSwipers();
-  
-    let lastWidth = $(window).width();
-    let resizeTimer;
-  
-    $(window).on("resize.aboutSwiper", function () {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () {
-        const currentWidth = $(window).width();
-        const wasMobile = lastWidth <= 780;
-        const isMobile = currentWidth <= 780;
-  
-        if (wasMobile !== isMobile) initSwipers();
-        else aboutSwiper?.update();
-  
-        lastWidth = currentWidth;
-      }, 250);
-    });
-  
-    // ✅ hover 효과(중복 방지)
-    $(".eg_link_profi a")
-      .off(".aboutHover")
-      .on("mouseenter.aboutHover", function () {
-        $(this)
-          .parents(".link_profi_w")
-          .siblings(".link_profi")
-          .find(".marquee-nav")
-          .addClass("react_mov");
-      })
-      .on("mouseleave.aboutHover", function () {
-        $(this)
-          .parents(".link_profi_w")
-          .siblings(".link_profi")
-          .find(".marquee-nav")
-          .removeClass("react_mov");
-      });
-  
-    // ✅ cleanup도 제공하면 React에서 깔끔하게 정리 가능
-    window.legacyIndex6Destroy = function () {
-      $(window).off("resize.aboutSwiper");
-      $(".eg_link_profi a").off(".aboutHover");
-      destroyAboutSwiper();
-    };
-  };
-  
-  /* =========================================================
-     전역: marquee / gsap / scroll nav 등
-     - App mount 후 1회 호출 권장
-  ========================================================= */
-  window.index6Init = function () {
+    /* -------------------------------
+       marqueeify (emoji)
+    -------------------------------- */
     let currentClassIndex = 0;
     const classes = ["boo", "hey", "dude", "classes", "and", "junk"];
     let currentClass = "";
     const $target = $(".yo");
+    const $marquee = $(".marquee");
   
-    // marqueeify
-    if ($(".marquee").length) {
-      $(".marquee").marqueeify({
+    if ($marquee.length) {
+      $marquee.marqueeify({
         speed: 350,
         bumpEdge: function () {
           const nextClass = classes[currentClassIndex++];
@@ -164,9 +35,14 @@ $(window).on("load.index6", function () {
       });
     }
   
-    // about marquee
-    if ($(".about-marquee").length) {
-      $(".about-marquee").marquee({
+    /* -------------------------------
+       rollingmarquee (jQuery.marquee)
+    -------------------------------- */
+    const $aboutMarquee = $(".about-marquee");
+    const $marqueeNav = $(".marquee-nav");
+  
+    if ($aboutMarquee.length) {
+      $aboutMarquee.marquee({
         duration: 21000,
         gap: 0,
         delayBeforeStart: 0,
@@ -177,100 +53,252 @@ $(window).on("load.index6", function () {
       });
     }
   
-    // profile-links hover (중복 방지)
-    $(".profile-links a")
-      .off(".index6")
-      .on("mouseenter.index6", function () {
-        $(".link_profi .marquee-nav, .link_profi .marquee-nav_l")
-          .css("animation-play-state", "paused");
-        $(".link_profi a").css("-webkit-text-fill-color", "#fb00db");
-      })
-      .on("mouseleave.index6", function () {
-        $(".link_profi .marquee-nav, .link_profi .marquee-nav_l")
-          .css("animation-play-state", "running");
-        $(".link_profi a").css("-webkit-text-fill-color", "rgba(0,0,0,0)");
-      });
-  
-    // GSAP
-    if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
-      gsap.registerPlugin(ScrollTrigger);
-  
-      const scrW = $(window).width();
-      const triggerElem = scrW >= 860 ? ".img_cont_box" : "#sub_cent";
-  
-      if ($(".img_cont_txt span").length) {
-        gsap.to(".img_cont_txt span", {
-          scrollTrigger: {
-            trigger: triggerElem,
-            start: "top 50%",
-            toggleClass: { targets: ".img_cont_txt span", className: "visible" },
-            once: true,
-          },
-        });
-      }
-  
-      gsap.utils.toArray(".work-item").forEach((item) => {
-        gsap.fromTo(
-          item,
-          { opacity: 0, y: 50 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.2,
-            ease: "linear",
-            scrollTrigger: { trigger: item, start: "top 85%", once: true },
-          }
-        );
+    if ($marqueeNav.length) {
+      $marqueeNav.marquee({
+        duration: 10000,
+        gap: 10,
+        delayBeforeStart: 0,
+        direction: "left",
+        duplicated: true,
+        pauseOnHover: false,
+        startVisible: true,
       });
     }
   
-    // skill hover
-    $(".skillM_t a")
-      .off(".index6")
-      .on("mouseenter.index6", function () {
-        $(this).siblings().show();
-      })
-      .on("mouseleave.index6", function () {
-        $(this).siblings().hide();
-      });
+    /* -------------------------------
+       GSAP ScrollTrigger
+    -------------------------------- */
+    let workGridTrigger = null;
+    const animatedItems = new Set();
   
-    // About nav scroll (중복 방지)
-    $(window)
-      .off("scroll.index6")
-      .on("scroll.index6", function () {
-        const $about = $("#About_gh");
-        const $nav = $("#sub_bott .nav_scroll");
-        if (!$about.length || !$nav.length) return;
+    const initWorkItemTriggers = () => {
+      // 기존 ScrollTrigger 제거
+      if (workGridTrigger) {
+        workGridTrigger.kill();
+        workGridTrigger = null;
+      }
   
-        const navTop = $about.offset().top;
-        const offset = $(window).height() / 8;
-        const scrollPos = $(window).scrollTop() + offset;
-  
-        if (scrollPos >= navTop) {
-          $nav.addClass("about_nav_bg");
-          $("#sub_bott .nav_W, #sub_bott .nav_W a").show();
-        } else {
-          $nav.removeClass("about_nav_bg");
-          $("#sub_bott .nav_W, #sub_bott .nav_W a").hide();
+      // 모든 work-item 초기화
+      const workItems = typeof gsap !== "undefined" ? gsap.utils.toArray(".work-item") : [];
+      workItems.forEach((item) => {
+        if (typeof gsap !== "undefined") {
+          gsap.killTweensOf(item);
+          gsap.set(item, { y: 80, opacity: 0, immediateRender: true });
         }
       });
   
+      animatedItems.clear();
+  
+      const workGrid = document.querySelector(".work-grid");
+      if (!workGrid || workItems.length === 0) return;
+  
+      const checkAndAnimateItems = () => {
+        const windowHeight = window.innerHeight;
+        const triggerPoint = windowHeight * 0.9;
+  
+        workItems.forEach((item) => {
+          if (animatedItems.has(item)) return;
+  
+          const rect = item.getBoundingClientRect();
+          if (rect.top <= triggerPoint) {
+            if (typeof gsap === "undefined") return;
+  
+            const tl = gsap.timeline({
+              onComplete: () => {
+                animatedItems.add(item);
+              },
+            });
+  
+            const currentY = gsap.getProperty(item, "y") || 0;
+            if (currentY === 0) {
+              gsap.set(item, { y: 80, opacity: 0, immediateRender: true });
+            }
+  
+            tl.fromTo(
+              item,
+              { opacity: 0 },
+              { opacity: 1, duration: 0.8, ease: "sine.inOut", immediateRender: false }
+            ).fromTo(
+              item,
+              { y: 150 },
+              { y: 0, duration: 0.2, ease: "elastic.out(1, 0.3)", immediateRender: false },
+              "<"
+            );
+  
+            // 시작 즉시 추가(중복 방지)
+            animatedItems.add(item);
+          }
+        });
+      };
+  
+      // work-grid 트리거 생성
+      workGridTrigger = ScrollTrigger.create({
+        trigger: workGrid,
+        start: "top 90%",
+        end: "bottom 10%",
+        onEnter: checkAndAnimateItems,
+        onEnterBack: checkAndAnimateItems,
+        onUpdate: checkAndAnimateItems,
+      });
+  
+      // 초기 체크 (DOM/레이아웃 확정 대기)
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          checkAndAnimateItems();
+        });
+      });
+  
+      // 전역 접근(필요시)
+      window.workGridTrigger = workGridTrigger;
+    };
+  
+    const hasGsap = typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined";
+    if (hasGsap) {
+      gsap.registerPlugin(ScrollTrigger);
+  
+      initWorkItemTriggers();
+      ScrollTrigger.refresh();
+    }
+  
+    /* -------------------------------
+       resize / orientationchange
+    -------------------------------- */
+    let resizeTimer = null;
+    let lastWidth = window.innerWidth;
+  
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const currentWidth = window.innerWidth;
+        const isSignificantChange = Math.abs(currentWidth - lastWidth) > 200;
+  
+        if (hasGsap) {
+          if (isSignificantChange) {
+            initWorkItemTriggers();
+            lastWidth = currentWidth;
+          }
+          ScrollTrigger.refresh();
+        }
+      }, 250);
+    };
+  
+    const handleOrientation = () => {
+      setTimeout(() => {
+        if (hasGsap) {
+          initWorkItemTriggers();
+          ScrollTrigger.refresh();
+        }
+      }, 300);
+    };
+  
+    window.addEventListener("resize", handleResize, { passive: true });
+    window.addEventListener("orientationchange", handleOrientation, { passive: true });
+  
+    // 초기 상태 계산
     $(window).trigger("scroll");
   
-    // ✅ cleanup 제공
-    window.index6Destroy = function () {
-      $(window).off(".index6");
-      $(document).off(".index6");
-      $(".profile-links a").off(".index6");
-      $(".skillM_t a").off(".index6");
+    /* =========================================================
+       ✅ cleanup 반환: React useEffect return에서 호출됨
+    ========================================================= */
+    const cleanup = () => {
+      // 1) rAF/타이머 정리
+      if (resizeTimer) {
+        clearTimeout(resizeTimer);
+        resizeTimer = null;
+      }
+  
+      // 2) window 이벤트 제거
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleOrientation);
+  
+      // 3) GSAP/ScrollTrigger 정리
+      if (hasGsap) {
+        try {
+          if (workGridTrigger) {
+            workGridTrigger.kill();
+            workGridTrigger = null;
+          }
+          // 해당 페이지에서 만든 Trigger만 정리하는 게 가장 좋지만,
+          // 여기서는 안전하게 전체 kill(페이지 단일 사용 기준)
+          ScrollTrigger.getAll().forEach((t) => t.kill());
+          ScrollTrigger.refresh(true);
+  
+          // 남은 tween 정리(선택 영역)
+          const workItems = gsap.utils.toArray(".work-item");
+          workItems.forEach((item) => gsap.killTweensOf(item));
+  
+          animatedItems.clear();
+        } catch (e) {
+          // no-op
+        }
+      }
+  
+      // 4) marqueeify 정리(우리 플러그인은 destroy 지원하도록 아래에서 추가)
+      if ($marquee.length && typeof $marquee.marqueeify === "function") {
+        try {
+          $marquee.marqueeify("destroy");
+        } catch (e) {
+          // fallback: 강제 stop
+          $marquee.stop(true, true);
+          $(window).off("resize.index6");
+        }
+      }
+  
+      // 5) jQuery.marquee 정리(플러그인별 destroy 이름이 다를 수 있어 try/catch)
+      const tryDestroyMarquee = ($el) => {
+        if (!$el || !$el.length) return;
+        try {
+          // 어떤 플러그인은 destroy 지원
+          $el.marquee("destroy");
+        } catch (e1) {
+          try {
+            // pause 지원하는 경우
+            $el.marquee("pause");
+          } catch (e2) {
+            // 마지막 fallback: 애니메이션 멈춤
+            $el.stop(true, true);
+          }
+        }
+      };
+  
+      tryDestroyMarquee($aboutMarquee);
+      tryDestroyMarquee($marqueeNav);
+  
+      // 6) bumpEdge로 붙인 클래스 원복(선택)
+      if (currentClass) $target.removeClass(currentClass);
+  
+      // 전역 참조 정리
+      window.workGridTrigger = null;
     };
+  
+    window.__INDEX6_CLEANUP__ = cleanup;
+    return cleanup;
   };
   
   /* =========================================================
      marqueeify plugin
-  ========================================================= */
+     ✅ 개선: destroy 지원 (React cleanup에서 호출 가능)
+   ========================================================= */
   (function ($) {
-    $.fn.marqueeify = function (options) {
+    $.fn.marqueeify = function (optionsOrMethod) {
+      // ✅ destroy 모드
+      if (optionsOrMethod === "destroy") {
+        return this.each(function () {
+          const $el = $(this);
+          const data = $el.data("marqueeify");
+          // 애니메이션 중단
+          $el.stop(true, true);
+          // resize 핸들러 제거
+          if (data && data.onResize) {
+            $(window).off("resize.index6", data.onResize);
+          } else {
+            $(window).off("resize.index6");
+          }
+          $el.removeData("marqueeify");
+        });
+      }
+  
+      const options = optionsOrMethod || {};
       const settings = $.extend(
         {
           horizontal: true,
@@ -365,7 +393,10 @@ $(window).on("load.index6", function () {
         if (settings.horizontal) move.right();
         if (settings.vertical) move.down();
   
-        $(window).on("resize.index6Marqueeify", getSizes);
+        // ✅ 네임스페이스 + 핸들러 저장 → destroy에서 정확히 off 가능
+        const onResize = () => getSizes();
+        $(window).on("resize.index6", onResize);
+        $el.data("marqueeify", { onResize });
       });
     };
   })(jQuery);

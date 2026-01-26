@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import TopNav from "../layout/TopNav";
 
 export default function Modal({ isOpen, onClose, children, modalId }) {
     useEffect(() => {

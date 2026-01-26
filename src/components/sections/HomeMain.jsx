@@ -9,7 +9,7 @@ export default function HomeMain() {
                     <TopNav />
 
                     <div className="home-content">
-                        <div className="emoji-home marquee">
+                        <div className="emoji-home yo marquee">
                             <p>
                                 <span className="sr-only">움직이는 이모지</span>
                             </p>

@@ -4,7 +4,7 @@ export default function BottomLinks() {
             <section id="bottom" style={{ background: '#ffffff' }} className="content-section">
                 <div className="inner">
                     <div className="title title--xl title--email">
-                        <a href="#site_work">gohhaneul@gmail.com</a>
+                        <a href="#site_work" className="split char">gohhaneul@gmail.com</a>
                         <span className="bubble-text">Thank you for visiting!</span>
                     </div>
                 </div>
