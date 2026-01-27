@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import Loading from "./components/common/Loading.jsx";
 import HomeMain from "./components/sections/HomeMain.jsx";
-import AboutGh from "./components/sections/AboutGh.jsx";
+import About from "./components/sections/About.jsx";
 import Works from "./components/sections/Works.jsx";
 import BottomLinks from "./components/sections/BottomLinks.jsx";
 import NavScroll from "./components/layout/NavScroll.jsx";
@@ -72,7 +72,7 @@ export default function App() {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         if (typeof window.portfolioInit === "function") {
-          // ✅ portfolioInit이 반환하는 cleanup을 받아둠
+          // portfolioInit이 반환하는 cleanup을 받아둠
           cleanupPortfolio = window.portfolioInit();
         }
 
@@ -97,7 +97,7 @@ export default function App() {
       {showNavScroll && <NavScroll />}
 
       <main id="main">
-        <AboutGh />
+        <About />
         <Works />
       </main>
 

@@ -1,15 +1,20 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 
-export default defineConfig({
-  plugins: [react()],
-  base: "/gohhaneul/",
-  server: {
-    host: true,
-    port: 5173,
-    strictPort: true,
-  },
-  build: {
-    outDir: "dist",
-  },
+export default defineConfig(({ command }) => {
+  // 개발 환경: 상대 경로, 빌드 환경: 절대 경로
+  const base = command === 'build' ? "/gohhaneul/" : "./";
+
+  return {
+    plugins: [react()],
+    base: base,
+    server: {
+      host: true,
+      port: 5173,
+      strictPort: true,
+    },
+    build: {
+      outDir: "dist",
+    },
+  };
 });

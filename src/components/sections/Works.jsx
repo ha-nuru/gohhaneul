@@ -3,6 +3,15 @@ import DOMPurify from "dompurify";
 import Modal from "../common/Modal.jsx";
 import { worksData } from "../../data/worksData.js";
 
+// BASE_URL을 사용하여 경로를 동적으로 생성
+const BASE_URL = import.meta.env.BASE_URL || '/';
+const getAssetPath = (path) => {
+  if (path.startsWith('/')) {
+    return BASE_URL + path.slice(1);
+  }
+  return BASE_URL + path;
+};
+
 export default function Works() {
     const [selectedWork, setSelectedWork] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -111,25 +120,6 @@ export default function Works() {
         setSelectedWork(null);
     };
 
-    const renderStars = (rating) => {
-        const stars = [];
-        for (let i = 0; i < 5; i++) {
-            stars.push(
-                <span key={i}>
-                    <img
-                        src={
-                            i < rating
-                                ? "assets/img/rating-star-filled.png"
-                                : "assets/img/rating-star-empty.png"
-                        }
-                        alt=""
-                    />
-                </span>
-            );
-        }
-        return stars;
-    };
-
     return (
         <>
             <section id="works" className="content-section">
@@ -209,7 +199,14 @@ export default function Works() {
                                         </span>
                                     </p>
                                     {selectedWork.description && (
-                                        <p className="detail-text">{selectedWork.description}</p>
+                                        <p className="detail-text">
+                                            {Array.isArray(selectedWork.description)
+                                                ? selectedWork.description.map((line, i) => (
+                                                    <span key={i}>{line}</span>
+                                                ))
+                                                : <span>{selectedWork.description}</span>
+                                            }
+                                        </p>
                                     )}
                                 </div>
                             </div>
