@@ -2,7 +2,11 @@
 // BASE_URL을 사용하여 경로를 동적으로 생성 (빌드 시 자동으로 base 경로가 적용됨)
 const BASE_URL = import.meta.env.BASE_URL || '/';
 const getAssetPath = (path) => {
-  // 이미 절대 경로로 시작하는 경우 그대로 반환, 아니면 BASE_URL 추가
+  // 이미 BASE_URL로 시작하는 경우 그대로 반환 (중복 방지)
+  if (path.startsWith(BASE_URL)) {
+    return path;
+  }
+  // 이미 절대 경로로 시작하는 경우 BASE_URL 추가
   if (path.startsWith('/')) {
     return BASE_URL + path.slice(1); // 앞의 '/' 제거 후 BASE_URL 추가
   }
