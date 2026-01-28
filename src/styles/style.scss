@@ -123,7 +123,7 @@
         &-inner {
             p {
                 &+p {
-                    margin-top: clamp(10px, 2vw, 15px);
+                    margin-top: fluid(toRem(10), toRem(15));
                 }
             }
         }
@@ -439,10 +439,10 @@
         max-width: 1300px;
         margin: 0 auto;
         padding:
-            clamp(150px, 15vw, 200px) clamp(15px, 5vw, 30px) clamp(80px, 10vw, 150px);
+            fluid(toRem(150), toRem(200)) fluid(toRem(15), toRem(30)) fluid(toRem(80), toRem(150));
 
         h5 {
-            font-size: clamp(toRem(50), 12vw, toRem(65));
+            font-size: fluid(toRem(50), toRem(65));
             margin-bottom: fluid(toRem(30), toRem(50));
             display: inline-block;
             color: $color-magenta;
@@ -462,9 +462,9 @@
         }
     }
 
-    &:nth-child(even) {
+    &:last-of-type {
         .inner {
-            padding-top: clamp(80px, 15vw, 150px);
+            padding-block: fluid(toRem(80), toRem(150)) fluid(toRem(120), toRem(200));
         }
     }
 }
