@@ -93,7 +93,7 @@
         text-align: center;
         white-space: nowrap;
         margin-bottom: 0;
-        margin-top: 0;
+        margin-top: fluid(toRem(-50), toRem(-100));
     
         p {
             display: inline-block;
@@ -769,22 +769,14 @@
 
     .work-grid {
         width: 100%;
-        align-items: center;
-        display: inline-flex;
-        flex-direction: column;
-        min-width: 0;
-    }
-
-    .work-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: fluid(toRem(50), toRem(100));
+        gap: 0 fluid(toRem(50), toRem(90));
         max-width: 1200px;
-        margin: fluid(toRem(50), toRem(100)) auto 0;
-
+        margin: fluid(toRem(50), toRem(150)) auto 0;
         @include mobile-medium {
             grid-template-columns: 1fr;
-            gap: fluid(toRem(50), toRem(100));
+            gap: toRem(50);
         }
     }
 
