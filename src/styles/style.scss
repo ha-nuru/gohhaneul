@@ -133,8 +133,14 @@
 .split {
     opacity: 0;
     will-change: transform;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     * {
         will-change: transform;
+        opacity: 1;
+        visibility: inherit;
+        transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+        transform: translate3d(0px, 0px, 0px);
+        overflow: hidden;
     }
 }
 

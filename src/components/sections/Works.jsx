@@ -202,6 +202,9 @@ export default function Works() {
                                         <span className="skill-percentage">
                                             {selectedWork.skillPercentage ? selectedWork.skillPercentage : "100%"}
                                         </span>
+                                        <span className="skill-role">
+                                            {selectedWork.skillRole ? ` / ${selectedWork.skillRole}` : ""}
+                                        </span>
                                     </p>
                                     {selectedWork.description && (
                                         <p className="detail-text">

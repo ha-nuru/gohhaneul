@@ -24,6 +24,7 @@ export const worksData = {
         // siteUrl: "https://www.tobesoftax.com/front/html/main/main.php",
         logo: getAssetPath("/assets/img/logo-tba.png"),
         skillPercentage: "100%",
+        skillRole: "퍼블리싱 리딩 역할 수행",
         sections: [
             {
                 title: "사용기술",
@@ -64,6 +65,7 @@ export const worksData = {
         siteUrl: "#",
         logo: getAssetPath("/assets/img/logo-nh.png"),
         skillPercentage: "100%",
+        skillRole: "퍼블리싱 리딩 역할 수행",
         sections: [
             {
                 title: "사용기술",
@@ -102,7 +104,8 @@ export const worksData = {
         thumbnail: getAssetPath("/assets/img/logo-tck.png"),
         siteUrl: "#",
         logo: getAssetPath("/assets/img/logo-tck.png"),
-        skillPercentage: "80% / 퍼블리싱 리딩 역할 수행",
+        skillPercentage: "80%",
+        skillRole: "퍼블리싱 리딩 역할 수행",
         sections: [
             {
                 title: "사용기술",
@@ -142,6 +145,7 @@ export const worksData = {
         siteUrl: "#",
         logo: getAssetPath("/assets/img/logo-pp.png"),
         skillPercentage: "100%",
+        skillRole: "퍼블리싱 리딩 역할 수행",
         sections: [
             {
                 title: "사용기술",
@@ -265,6 +269,7 @@ export const worksData = {
         siteUrl: "#",
         logo: getAssetPath("/assets/img/logo-hd.png"),
         skillPercentage: "100%",
+        skillRole: "퍼블리싱 리딩 역할 수행",
         sections: [
             {
                 title: "사용기술",
@@ -305,6 +310,7 @@ export const worksData = {
         siteUrl: "#",
         logo: getAssetPath("/assets/img/logo-dxc.png"),
         skillPercentage: "100%",
+        skillRole: "퍼블리싱 리딩 역할 수행",
         sections: [
             {
                 title: "사용기술",
@@ -343,6 +349,7 @@ export const worksData = {
         siteUrl: "#",
         logo: getAssetPath("/assets/img/logo-toktok.png"),
         skillPercentage: "100%",
+        skillRole: "퍼블리싱 리딩 역할 수행",
         sections: [
             {
                 title: "사용기술",
