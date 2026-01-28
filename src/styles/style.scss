@@ -342,7 +342,7 @@
 
 .load {
     &-emoji {
-        @include bg-image(url('/assets/img/emoji-loading2.png'), contain);
+        @include bg-image(url('/assets/img/emoji-loading2.webp'), contain);
         position: absolute;
         left: 50%;
         bottom: 50px;
@@ -526,24 +526,24 @@
             z-index: $z-base;
             width: fluid(150px, 300px);
             height: fluid(150px, 350px);
-            background: url(/assets/img/memoji1.png) no-repeat center center;
+            background: url(/assets/img/memoji1.webp) no-repeat center center;
             background-size: contain;
 
             &.boo,
             &.classes {
-                background: url(/assets/img/memoji2.png) no-repeat center center;
+                background: url(/assets/img/memoji2.webp) no-repeat center center;
                 background-size: contain;
             }
 
             &.hey,
             &.and {
-                background: url(/assets/img/memojit.png) no-repeat center center;
+                background: url(/assets/img/memojit.webp) no-repeat center center;
                 background-size: contain;
             }
 
             &.dude,
             &.junk {
-                background: url(/assets/img/memojir.png) no-repeat center center;
+                background: url(/assets/img/memojir.webp) no-repeat center center;
                 background-size: contain;
             }
         }
