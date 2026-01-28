@@ -98,11 +98,11 @@ export const worksData = {
         title: "트랜스코스모스코리아 홈페이지 리뉴얼",
         period: "2023.05 ~ 2023.07",
         tags: ["반응형", "스크롤 인터렉션"],
-        description: "트렌스코스모스코리아 기업 홈페이지 반응형 리뉴얼 프로젝트",
+        description: "트랜스코스모스코리아 기업 홈페이지 반응형 리뉴얼 프로젝트",
         thumbnail: getAssetPath("/assets/img/logo-tck.png"),
         siteUrl: "#",
         logo: getAssetPath("/assets/img/logo-tck.png"),
-        skillPercentage: "80%",
+        skillPercentage: "80% / 퍼블리싱 리딩 역할 수행",
         sections: [
             {
                 title: "사용기술",
