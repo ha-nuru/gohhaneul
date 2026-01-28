@@ -259,7 +259,7 @@ export const worksData = {
         tags: ["Markup", "Sass"],
         description: [
             "현대백화점 면세점 웹·모바일 서비스 리뉴얼 프로젝트",
-            "주문·결제, 여권, 출국 정보 화면 개선",
+            "주문·결제, 여권·출국 정보 화면 개선",
         ],
         thumbnail: getAssetPath("/assets/img/logo-hd.png"),
         siteUrl: "#",
