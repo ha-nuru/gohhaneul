@@ -159,16 +159,29 @@
     }
 }
 
+.preview-item {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+}
+
 .swiper-slide {
     aspect-ratio: 16 / 9;
     overflow: hidden;
 
     img {
         width: 100%;
-        height: 100%;
+        height: 100% !important;
         object-fit: contain;
-        object-position: center;
+        // object-position: top;
         display: block;
+        background-color: rgba(0, 0, 0, 0.1);
     }
 }
 

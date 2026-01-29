@@ -1,5 +1,7 @@
 import { useState, Fragment, useEffect, useRef } from "react";
 import DOMPurify from "dompurify";
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import Modal from "../common/Modal.jsx";
 import { worksData } from "../../data/worksData.js";
 
@@ -16,6 +18,47 @@ const getAssetPath = (path) => {
   }
   return BASE_URL + path;
 };
+
+// 이미지 로딩 상태를 관리하는 컴포넌트
+function PreviewImage({ src, alt, index, className = "" }) {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  return (
+    <div className={`preview-item ${className}`}>
+      {loading && (
+        <SkeletonTheme baseColor="#e0e0e0" highlightColor="#f5f5f5">
+          <Skeleton height={'100%'} style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 1 }} />
+        </SkeletonTheme>
+      )}
+      <img
+        src={src}
+        alt={alt || `미리보기 ${index + 1}`}
+        style={{ 
+          display: loading ? 'none' : 'block',
+          width: '100%',
+          height: 'auto'
+        }}
+        onLoad={() => setLoading(false)}
+        onError={() => {
+          setLoading(false);
+          setError(true);
+        }}
+      />
+      {error && <p style={{ color: '#999', padding: '20px' }}>이미지를 불러올 수 없습니다.</p>}
+    </div>
+  );
+}
+
+// 비디오 컴포넌트 (비디오는 스켈레톤 불필요하지만 일관성을 위해)
+function PreviewVideo({ src }) {
+  return (
+    <video src={src} controls style={{ width: '100%', height: 'auto' }}>
+      <source src={src} type="video/mp4" />
+      브라우저가 비디오 태그를 지원하지 않습니다.
+    </video>
+  );
+}
 
 export default function Works() {
     const [selectedWork, setSelectedWork] = useState(null);
@@ -92,10 +135,8 @@ export default function Works() {
                 try {
                     swiperInstanceRef.current = new window.Swiper('.swiper-container', {
                         loop: true,
-                        pagination: {
-                            el: '.swiper-pagination',
-                            clickable: true,
-                        },
+                        autoHeight: true, 
+
                         navigation: {
                             nextEl: '.swiper-button-next',
                             prevEl: '.swiper-button-prev',
@@ -280,12 +321,13 @@ export default function Works() {
                                                         {selectedWork.previewImages.map((preview, index) => (
                                                             <div key={index} className="swiper-slide">
                                                                 {preview.type === "image" ? (
-                                                                    <img src={preview.src} alt={preview.alt || `미리보기 ${index + 1}`} />
+                                                                    <PreviewImage 
+                                                                        src={preview.src} 
+                                                                        alt={preview.alt || `미리보기 ${index + 1}`}
+                                                                        index={index}
+                                                                    />
                                                                 ) : (
-                                                                    <video src={preview.src} controls>
-                                                                        <source src={preview.src} type="video/mp4" />
-                                                                        브라우저가 비디오 태그를 지원하지 않습니다.
-                                                                    </video>
+                                                                    <PreviewVideo src={preview.src} />
                                                                 )}
                                                             </div>
                                                         ))}
@@ -297,16 +339,16 @@ export default function Works() {
                                             ) : (
                                                 // 단일 이미지
                                                 selectedWork.previewImages.map((preview, index) => (
-                                                    <div key={index} className="preview-item">
-                                                        {preview.type === "image" ? (
-                                                            <img src={preview.src} alt={preview.alt || `미리보기 ${index + 1}`} />
-                                                        ) : (
-                                                            <video src={preview.src} controls>
-                                                                <source src={preview.src} type="video/mp4" />
-                                                                브라우저가 비디오 태그를 지원하지 않습니다.
-                                                            </video>
-                                                        )}
-                                                    </div>
+                                                    preview.type === "image" ? (
+                                                        <PreviewImage 
+                                                            key={index}
+                                                            src={preview.src} 
+                                                            alt={preview.alt || `미리보기 ${index + 1}`}
+                                                            index={index}
+                                                        />
+                                                    ) : (
+                                                        <PreviewVideo key={index} src={preview.src} />
+                                                    )
                                                 ))
                                             )}
                                         </div>
