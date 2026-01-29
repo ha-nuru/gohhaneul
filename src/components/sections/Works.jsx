@@ -37,7 +37,7 @@ function PreviewImage({ src, alt, index, className = "" }) {
         style={{ 
           display: loading ? 'none' : 'block',
           width: '100%',
-          height: 'auto'
+          height: '100%'
         }}
         onLoad={() => setLoading(false)}
         onError={() => {
