@@ -143,12 +143,18 @@
         opacity: 1;
         visibility: inherit;
         overflow: hidden;
-        line-height: 1.5;
+        line-height: 1.2;
     }
 
     &:has(.word) {
         * {
             transform: translate3d(0px, 0px, 0px);
+            line-height: 1;
+        }
+    }
+    &:has(.line) {
+        * {
+            line-height: 1.5;
         }
     }
 }
@@ -479,7 +485,7 @@
         }
     }
 
-    &:last-of-type {
+    &:nth-child(2) {
         .inner {
             padding-block: fluid(toRem(80), toRem(150)) fluid(toRem(120), toRem(200));
         }
