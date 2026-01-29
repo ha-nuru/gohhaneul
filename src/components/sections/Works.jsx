@@ -23,6 +23,28 @@ const getAssetPath = (path) => {
 function PreviewImage({ src, alt, index, className = "" }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const imgRef = useRef(null);
+
+  // src 변경 시 로딩 상태 초기화
+  useEffect(() => {
+    setLoading(true);
+    setError(false);
+  }, [src]);
+
+  // 캐시된 이미지: 이미 로드된 경우 onLoad가 발생하지 않으므로 complete로 확인
+  useEffect(() => {
+    const img = imgRef.current;
+    if (!img || !src) return;
+    if (img.complete && img.naturalWidth > 0) {
+      setLoading(false);
+    }
+  }, [src, loading]);
+
+  const handleLoad = () => setLoading(false);
+  const handleError = () => {
+    setLoading(false);
+    setError(true);
+  };
 
   return (
     <div className={`preview-item ${className}`}>
@@ -32,18 +54,18 @@ function PreviewImage({ src, alt, index, className = "" }) {
         </SkeletonTheme>
       )}
       <img
+        ref={imgRef}
         src={src}
         alt={alt || `미리보기 ${index + 1}`}
-        style={{ 
-          display: loading ? 'none' : 'block',
+        style={{
+          visibility: loading ? 'hidden' : 'visible',
+          position: loading ? 'absolute' : 'relative',
           width: '100%',
-          height: '100%'
+          height: '100%',
+          objectFit: 'contain',
         }}
-        onLoad={() => setLoading(false)}
-        onError={() => {
-          setLoading(false);
-          setError(true);
-        }}
+        onLoad={handleLoad}
+        onError={handleError}
       />
       {error && <p style={{ color: '#999', padding: '20px' }}>이미지를 불러올 수 없습니다.</p>}
     </div>
