@@ -497,7 +497,7 @@
               return;
             }
 
-            gsap.set(self.chars, { y: 50, opacity: 0, rotationX: -90 });
+            gsap.set(self.chars, { yPercent: 100, opacity: 0, rotationX: -90 });
             gsap.set(el, { opacity: 1 });
 
             if (!el._charTriggerMade) {
@@ -515,7 +515,7 @@
 
                   gsap.killTweensOf(chars);
                   gsap.to(chars, {
-                    y: 0,
+                    yPercent: 0,
                     opacity: 1,
                     rotationX: 0,
                     duration: 0.8,
@@ -569,9 +569,9 @@
                   gsap.to(words, {
                     yPercent: 0,
                     opacity: 1,
-                    duration: 0.6,
+                    duration: 0.5,
                     stagger: 0.06,
-                    ease: "expo.out",
+                    ease: "cubic-bezier(0.25, 1, 0.5, 1);",
                   });
                 },
               });
