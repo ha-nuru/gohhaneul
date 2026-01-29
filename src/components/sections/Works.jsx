@@ -32,13 +32,26 @@ function PreviewImage({ src, alt, index, className = "" }) {
   }, [src]);
 
   // 캐시된 이미지: 이미 로드된 경우 onLoad가 발생하지 않으므로 complete로 확인
+  // Swiper 등에서 DOM이 늦게 준비될 수 있어 지연 체크도 수행
   useEffect(() => {
     const img = imgRef.current;
     if (!img || !src) return;
-    if (img.complete && img.naturalWidth > 0) {
-      setLoading(false);
-    }
-  }, [src, loading]);
+
+    const tryComplete = () => {
+      if (img.complete && img.naturalWidth > 0) {
+        setLoading(false);
+        return true;
+      }
+      return false;
+    };
+
+    if (tryComplete()) return;
+
+    const t = setTimeout(() => {
+      tryComplete();
+    }, 150);
+    return () => clearTimeout(t);
+  }, [src]);
 
   const handleLoad = () => setLoading(false);
   const handleError = () => {
@@ -156,8 +169,8 @@ export default function Works() {
                 // 새 Swiper 인스턴스 생성
                 try {
                     swiperInstanceRef.current = new window.Swiper('.swiper-container', {
-                        loop: true,
-                        autoHeight: true, 
+                        loop: false, 
+                        autoHeight: true,
 
                         navigation: {
                             nextEl: '.swiper-button-next',
