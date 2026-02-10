@@ -8,7 +8,7 @@ export default function About() {
                         <span className="sr-only">나</span>
                     </div>
                 </div>
-                <strong className="title--about split word">Yes I can do!</strong>
+                <strong className="title--about split word">Yes, I can do!</strong>
                 <div className="text--about-inner split line">
                     <p className="text--about">
                         <span>안녕하세요, 웹 퍼블리셔 고하늘입니다.</span>
