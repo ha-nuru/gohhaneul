@@ -28,7 +28,7 @@ export default function About() {
                         <span>소통을 통해 완성도를 높여가는 과정을 중요하게 생각합니다.</span>
                     </p>
                 </div>
-                <a className="btn-more-about" href="https://foam-tractor-439.notion.site/2ef7f9b0909c80eba254c3b8e32e6b5b" target="_blank" rel="noreferrer">more about me<span>!</span></a>
+                <a className="btn-more-about" href="https://foam-tractor-439.notion.site/3057f9b0909c802aa325d5dea008df9e" target="_blank" rel="noreferrer">more about me<span>!</span></a>
             </div>
 
         </section>
